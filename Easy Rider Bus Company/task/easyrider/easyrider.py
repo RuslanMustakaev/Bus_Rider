@@ -101,9 +101,42 @@ def start_finish_stops_checker():
     represent_stop(start_stops_set, transfer_stops_set, finish_stop_set)
 
 
+def check_bus_arrival_time(buses_data):
+    current_bus_id = None
+    current_time = None
+    wrong_arrival_time = False
+    wrong_arrival_stop = []
+    print("Arrival time test:")
+    for data_line in buses_data:
+        if current_bus_id is None:
+            current_bus_id = data_line["bus_id"]
+            current_time = data_line["a_time"]
+            continue
+        else:
+            if current_bus_id == data_line["bus_id"]:
+                if not wrong_arrival_time:
+                    if data_line["a_time"] > current_time:
+                        current_time = data_line["a_time"]
+                    else:
+                        wrong_arrival_time = True
+                        print(f'bus_id line {current_bus_id}: wrong time on station {data_line["stop_name"]}')
+                        wrong_arrival_stop.append(data_line["stop_name"])
+                        continue
+                else:
+                    continue
+            else:
+                current_bus_id = data_line["bus_id"]
+                current_time = data_line["a_time"]
+                wrong_arrival_time = False
+                continue
+    if len(wrong_arrival_stop) == 0:
+        print("OK")
+
+
 if __name__ == '__main__':
     routes = json.loads(input())
     # check_bus_data(routes)
     # format_errors()
     # count_bus_stops_number()
-    start_finish_stops_checker()
+    # start_finish_stops_checker()
+    check_bus_arrival_time(routes)
