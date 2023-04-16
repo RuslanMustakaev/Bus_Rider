@@ -57,7 +57,6 @@ def represent_stop(start_stop: set, transfer_stop: set, finish_stop: set) -> Non
     print(f"Start stops: {len(start_stop)} {sorted(list(start_stop))}")
     print(f"Transfer stops: {len(transfer_stop)}  {sorted(list(transfer_stop))}")
     print(f"Finish stops: {len(finish_stop)} {sorted(list(finish_stop))}")
-
     return None
 
 
@@ -133,10 +132,29 @@ def check_bus_arrival_time(buses_data):
         print("OK")
 
 
+def wrong_stops_checker():
+    wrong_stops = set()
+    all_stops_name_dict = dict()
+    for bus_data in routes:
+        all_stops_name_dict.setdefault(bus_data["stop_type"], set()).add(bus_data["stop_name"])
+    demand_stops = all_stops_name_dict['O']
+    del all_stops_name_dict['O']
+    for stop_name in all_stops_name_dict.values():
+        if len(demand_stops.intersection(stop_name)):
+            wrong_stops.update(demand_stops.intersection(stop_name))
+    if len(wrong_stops):
+        print("On demand stops test:")
+        print("Wrong stop type: {wrong_stops_list}".format(wrong_stops_list=sorted(list(wrong_stops))))
+    else:
+        print("On demand stops test:")
+        print("OK")
+
+
 if __name__ == '__main__':
     routes = json.loads(input())
     # check_bus_data(routes)
     # format_errors()
     # count_bus_stops_number()
     # start_finish_stops_checker()
-    check_bus_arrival_time(routes)
+    # check_bus_arrival_time(routes)
+    wrong_stops_checker()
