@@ -1,35 +1,45 @@
+"""The functionality for checking the correctness of buses data transmitted in JSON format passed to standard input"""
+
 import json
 import re
 from collections import defaultdict
 import itertools
 
-validation = {
-    'bus_id': {'type': int, 're_pattern': r"\d+"},
-    'stop_id': {'type': int, 're_pattern': r"\d+"},
-    'stop_name': {'type': str, 're_pattern': r"([A-Z]\w+\s)+(Road|Avenue|Boulevard|Street)$"},
-    'next_stop': {'type': int, 're_pattern': r"\d+"},
-    'stop_type': {'type': str, 're_pattern': r"[SOF ]?"},
-    'a_time': {'type': str, 're_pattern': r"((1\d)|(2[0-3])|(0\d)):([0-5]\d)"}
-}
 
-errors_dict = dict.fromkeys(validation, 0)
+class BusesData:
+    """The creation of the Buses object and the related functionality."""
+    # Required content and data type dictionary
+    validation = {
+        'bus_id': {'type': int, 're_pattern': r"\d+"},
+        'stop_id': {'type': int, 're_pattern': r"\d+"},
+        'stop_name': {'type': str, 're_pattern': r"([A-Z]\w+\s)+(Road|Avenue|Boulevard|Street)$"},
+        'next_stop': {'type': int, 're_pattern': r"\d+"},
+        'stop_type': {'type': str, 're_pattern': r"[SOF ]?"},
+        'a_time': {'type': str, 're_pattern': r"((1\d)|(2[0-3])|(0\d)):([0-5]\d)"}
+    }
+
+    def __init__(self, data):
+        self.buses_data = data
+        self.errors_dict = dict.fromkeys(self.validation, 0)
+
+    def check_bus_data(self) -> None:
+        """Check required fields are filled and type of data"""
+        for bus_data in self.buses_data:
+            for key, value in bus_data.items():
+                if not isinstance(value, self.validation[key]['type']) or \
+                        re.fullmatch(self.validation[key]['re_pattern'], str(value)) is None:
+                    self.errors_dict[key] += 1
+        return None
+
+    def show_data_validation(self):
+        """Print quantity of data type errors and wrong fill of the fields"""
+        print(f"Type and required field validation: {sum(self.errors_dict.values())} errors")
+        for key, value in self.errors_dict.items():
+            if value:
+                print(f"{key}: {value}")
 
 
-def check_bus_data(bus_info: dict):
-    global errors_dict
-    for route in bus_info:
-        for key, value in route.items():
-            if not isinstance(value, validation[key]['type']) or \
-                    re.fullmatch(validation[key]['re_pattern'], str(value)) is None:
-                # print(value)
-                errors_dict[key] += 1
-
-
-def type_validation_errors():
-    print(f"Type and required field validation: {sum(errors_dict.values())} errors")
-    for k, v in errors_dict.items():
-        if v:
-            print(f"{k}: {v}")
+errors_dict = dict()  # Just for fix errors
 
 
 def format_errors():
@@ -152,9 +162,11 @@ def wrong_stops_checker():
 
 if __name__ == '__main__':
     routes = json.loads(input())
+    buses = BusesData(routes)
+    buses.show_data_validation()
     # check_bus_data(routes)
     # format_errors()
     # count_bus_stops_number()
     # start_finish_stops_checker()
     # check_bus_arrival_time(routes)
-    wrong_stops_checker()
+    # wrong_stops_checker()
