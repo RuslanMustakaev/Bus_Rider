@@ -59,7 +59,7 @@ class BusesData:
 
     @property
     def stop_names_for_buses(self) -> dict:
-        """Generate dictionary with key - bus_id and value set of stops for this bus"""
+        """Generate dictionary with key - 'bus_id' and value - set of stops for this bus"""
         stop_names_for_buses_dict = dict()
         for bus_data in self.buses_data:
             stop_names_for_buses_dict.setdefault(bus_data["bus_id"], set()).add(bus_data["stop_name"])
