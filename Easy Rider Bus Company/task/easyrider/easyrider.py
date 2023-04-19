@@ -57,21 +57,18 @@ class BusesData:
             if error_field in fields_for_check_set:
                 print(f"{error_field}: {errors_value}")
 
+    @property
+    def stop_names_for_buses(self) -> dict:
+        """Generate dictionary with key - bus_id and value set of stops for this bus"""
+        stop_names_for_buses_dict = dict()
+        for bus_data in self.buses_data:
+            stop_names_for_buses_dict.setdefault(bus_data["bus_id"], set()).add(bus_data["stop_name"])
+        return stop_names_for_buses_dict
 
-errors_dict = dict()  # Just for fix errors
-
-
-def count_bus_stops_number():
-    bus_counter = {}
-    print("Line names and number of stops:")
-    for route in routes:
-        for key, value in route.items():
-            if key == 'bus_id':
-                if bus_counter.get(value) is None:
-                    bus_counter[value] = 1
-                else:
-                    bus_counter[value] += 1
-    print(bus_counter)
+    def show_bus_stops_number(self):
+        print("Line names and number of stops:")
+        for bus_id, stops_set in self.stop_names_for_buses.items():
+            print(f"bus_id: {bus_id}, stops: {len(stops_set)}")
 
 
 def represent_stop(start_stop: set, transfer_stop: set, finish_stop: set) -> None:
@@ -176,6 +173,7 @@ if __name__ == '__main__':
     buses = BusesData(routes)
     buses.check_bus_data()
     buses.show_format_errors()
+    buses.show_bus_stops_number()
     # check_bus_data(routes)
     # format_errors()
     # count_bus_stops_number()
