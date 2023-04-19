@@ -38,16 +38,27 @@ class BusesData:
             if value:
                 print(f"{key}: {value}")
 
+    def show_format_errors(self):
+        """Check of the data format complies with the documentation requirements
+
+        Requirements for fields:\n
+        'stop_name' - [proper name][suffix]
+                      Suffix: Road|Avenue|Boulevard|Street
+                      Proper name starts with the capital latter
+
+        'stop_type' - S (for starting stop)
+                      O (for stop on demand)
+                      F (for final stop)
+
+        'a_time'    - HH:MM (24-hour date format)"""
+        fields_for_check_set = {'stop_name', 'stop_type', 'a_time'}
+        print(f"Format validation: {sum(self.errors_dict.values())} errors")
+        for error_field, errors_value in self.errors_dict.items():
+            if error_field in fields_for_check_set:
+                print(f"{error_field}: {errors_value}")
+
 
 errors_dict = dict()  # Just for fix errors
-
-
-def format_errors():
-    fields_for_check_set = {'stop_name', 'stop_type', 'a_time'}
-    print(f"Format validation: {sum(errors_dict.values())} errors")
-    for error_field, errors_value in errors_dict.items():
-        if error_field in fields_for_check_set:
-            print(f"{error_field}: {errors_value}")
 
 
 def count_bus_stops_number():
@@ -163,7 +174,8 @@ def wrong_stops_checker():
 if __name__ == '__main__':
     routes = json.loads(input())
     buses = BusesData(routes)
-    buses.show_data_validation()
+    buses.check_bus_data()
+    buses.show_format_errors()
     # check_bus_data(routes)
     # format_errors()
     # count_bus_stops_number()
