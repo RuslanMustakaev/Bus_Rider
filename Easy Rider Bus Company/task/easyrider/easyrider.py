@@ -2,7 +2,6 @@
 
 import json
 import re
-from collections import defaultdict
 import itertools
 
 
@@ -38,8 +37,8 @@ class BusesData:
             if value:
                 print(f"{key}: {value}")
 
-    def show_format_errors(self):
-        """Check of the data format complies with the documentation requirements
+    def show_format_errors(self) -> None:
+        """Check of the data format complies with the documentation requirements and print count of errors for fields
 
         Requirements for fields:\n
         'stop_name' - [proper name][suffix]
@@ -56,6 +55,7 @@ class BusesData:
         for error_field, errors_value in self.errors_dict.items():
             if error_field in fields_for_check_set:
                 print(f"{error_field}: {errors_value}")
+        return None
 
     @property
     def stop_names_for_buses(self) -> dict:
@@ -65,57 +65,53 @@ class BusesData:
             stop_names_for_buses_dict.setdefault(bus_data["bus_id"], set()).add(bus_data["stop_name"])
         return stop_names_for_buses_dict
 
-    def show_bus_stops_number(self):
+    def show_bus_stops_number(self) -> None:
+        """Print quantity of stops for each bus in data"""
         print("Line names and number of stops:")
         for bus_id, stops_set in self.stop_names_for_buses.items():
             print(f"bus_id: {bus_id}, stops: {len(stops_set)}")
+        return None
 
+    @property
+    def start_stops(self) -> set:
+        """Collect set of start stops for all buses"""
+        return {bus_data["stop_name"] for bus_data in self.buses_data if bus_data["stop_type"] == "S"}
 
-def represent_stop(start_stop: set, transfer_stop: set, finish_stop: set) -> None:
-    print(f"Start stops: {len(start_stop)} {sorted(list(start_stop))}")
-    print(f"Transfer stops: {len(transfer_stop)}  {sorted(list(transfer_stop))}")
-    print(f"Finish stops: {len(finish_stop)} {sorted(list(finish_stop))}")
-    return None
+    @property
+    def finish_stops(self) -> set:
+        """Collect set of finish stops for all buses"""
+        return {bus_data["stop_name"] for bus_data in self.buses_data if bus_data["stop_type"] == "F"}
 
+    @property
+    def transfer_stops(self) -> set:
+        """Collect set of transfer stops between buses"""
+        transfer_stops = set()
+        transfer_iter = itertools.combinations(self.stop_names_for_buses.values(), 2)
+        for stops_set in transfer_iter:
+            if len(stops_set[0].intersection(stops_set[1])):
+                transfer_stops.update(stops_set[0].intersection(stops_set[1]))
+        return transfer_stops
 
-def transfer_stops_find() -> set:
-    stop_names_for_bus_dict = dict()
-    transfer_stops = set()
-    for bus_data in routes:
-        stop_names_for_bus_dict.setdefault(bus_data["bus_id"], set()).add(bus_data["stop_name"])
+    def show_stops(self) -> None:
+        """Print lists of start, transfer, and finish stops"""
+        print(f"Start stops: {len(self.start_stops)} {sorted(self.start_stops)}")
+        print(f"Transfer stops: {len(self.transfer_stops)} {sorted(self.transfer_stops)}")
+        print(f"Finish stops: {len(self.finish_stops)} {sorted(self.finish_stops)}")
+        return None
 
-    transfer_iter = itertools.combinations(stop_names_for_bus_dict.values(), 2)
+    def start_finish_stops_checker(self):
+        """Check that each bus line has exactly one starting point (S) and one final stop (F)"""
+        stop_types_for_bus_dict = dict()
+        for bus_data in self.buses_data:
+            stop_types_for_bus_dict.setdefault(bus_data["bus_id"], set()).add(bus_data["stop_type"])
 
-    for stops_set in transfer_iter:
-        if len(stops_set[0].intersection(stops_set[1])):
-            transfer_stops.update(stops_set[0].intersection(stops_set[1]))
-    return transfer_stops
-
-
-def start_finish_stops_checker():
-    check_set = {"S", "F"}
-    start_stops_set = set()
-    transfer_stops_set = set()
-    finish_stop_set = set()
-    stop_types_for_bus_dict = dict()
-    for bus_data in routes:
-        stop_types_for_bus_dict.setdefault(bus_data["bus_id"], set()).add(bus_data["stop_type"])
-        if bus_data["stop_type"] == "S":
-            start_stops_set.add(bus_data["stop_name"])
-        elif bus_data["stop_type"] == "F":
-            finish_stop_set.add(bus_data["stop_name"])
-    for bus_id, types_of_stops in stop_types_for_bus_dict.items():
-        # print(types_of_stops)
-        set_that = types_of_stops.intersection(check_set)
-        # print(set_that, "!!!")
-        if "S" not in set_that or "F" not in set_that:
-            print(f"There is no start or end stop for the line: {bus_id}.")
-            # exit()
-            return None
-        else:
-            continue
-    transfer_stops_set.update(transfer_stops_find())
-    represent_stop(start_stops_set, transfer_stops_set, finish_stop_set)
+        for bus_id, stops_type_set in stop_types_for_bus_dict.items():
+            if "S" not in stops_type_set or "F" not in stops_type_set:
+                print(f"There is no start or end stop for the line: {bus_id}.")
+                return None
+            else:
+                continue
+        self.show_stops()
 
 
 def check_bus_arrival_time(buses_data):
@@ -171,9 +167,10 @@ def wrong_stops_checker():
 if __name__ == '__main__':
     routes = json.loads(input())
     buses = BusesData(routes)
-    buses.check_bus_data()
-    buses.show_format_errors()
-    buses.show_bus_stops_number()
+    # buses.check_bus_data()
+    # buses.show_format_errors()
+    # buses.show_bus_stops_number()
+    buses.start_finish_stops_checker()
     # check_bus_data(routes)
     # format_errors()
     # count_bus_stops_number()
