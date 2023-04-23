@@ -1,0 +1,10 @@
+type: code
+files:
+- name: main.py
+  visible: true
+  text: '# the variable ''teams'' is already defined'
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/8493#comment
+status: Solved
+record: -1
+submission_language: python3

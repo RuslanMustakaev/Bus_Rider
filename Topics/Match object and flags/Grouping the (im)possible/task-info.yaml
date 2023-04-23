@@ -1,0 +1,18 @@
+type: choice
+is_multiple_choice: false
+options:
+- text: It will raise <code>AttributeError</code>
+- text: An empty string will be returned
+- text: It will return <code>None</code>
+- text: It will raise <code>ValueError</code>
+files:
+- name: main.py
+  visible: true
+  text: |+
+    #  You can experiment here, it won’t be checked
+
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/15075#comment
+status: Solved
+record: -1
+local_check: false

@@ -1,0 +1,16 @@
+type: code
+files:
+- name: main.py
+  visible: true
+  text: |-
+    import itertools
+
+    # write your code here
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/27521#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: "Sat, 15 Apr 2023 17:56:36 UTC"
+record: -1
+submission_language: python3

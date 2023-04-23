@@ -1,0 +1,20 @@
+type: choice
+is_multiple_choice: false
+options:
+- text: "<strong>A</strong> and <strong>B</strong> are equivalent. We get [11, 13,\
+    \ 15, 17] in both cases."
+- text: "<strong>A</strong> returns  [11, 13, 15, 17] , while <strong>B</strong> returns\
+    \ [1, 2, 3, 4, 10, 11, 12, 13]."
+- text: "<strong>A</strong> returns  [11, 13, 15, 17] , while <strong>B</strong> fails."
+files:
+- name: main.py
+  visible: true
+  text: |+
+    #  You can experiment here, it won’t be checked
+
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/8125#comment
+status: Solved
+record: -1
+custom_name: Equivalent or Not?
+local_check: false
