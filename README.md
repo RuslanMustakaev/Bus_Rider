@@ -22,6 +22,7 @@ Checks buses data given in the JSON format and verifies compliance with requirem
         "a_time": "08:16"
     }
 ]
+    
     Requiriments for data format and data filling
     
     "bus_id"      - integer - must be filled
