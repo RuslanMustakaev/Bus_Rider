@@ -22,8 +22,7 @@ Checks buses data given in the JSON format and verifies compliance with requirem
         "next_stop": 0,
         "stop_type": "F",
         "a_time": "08:16"
-    }
-]
+    }]
     
     Requiriments for data format and data filling
     
