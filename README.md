@@ -1,8 +1,10 @@
 # Bus_Rider
 Study project
 
-easyride:
+easyrider:
+
 Checks buses data given in the JSON format and verifies compliance with requirement.
+
     Example:
     [
     {
